@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
 			_confidence = Mathf.Clamp(value, 0.0f, 1.0f); 
 			Expression = Mathf.FloorToInt(_confidence * 2.9f);
 			HUDController.UpdatePlayerConfidence(_confidence);
+			CameraEffectsController.ApplyConfidenceToEffects(_confidence);
 		}
 	}
 
