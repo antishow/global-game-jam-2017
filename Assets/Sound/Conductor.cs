@@ -9,6 +9,9 @@ public class Conductor : MonoBehaviour {
 	public float[] TrackVolumes;
 	public float TrackTime = 43.875f;
 
+	[RangeAttribute(0, 1)]
+	public float MasterVolume = 1.0f;
+
 	void Awake(){
 		_instance = this;
 		Play();
@@ -30,7 +33,7 @@ public class Conductor : MonoBehaviour {
 	protected void mixForConfidence(float confidence){
 		for(int i=0; i<Tracks.Length; i++){
 			AudioSource track = Tracks[i];
-			track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] / Tracks.Length;
+			track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] * MasterVolume / Tracks.Length;
 		}
 	}
 
