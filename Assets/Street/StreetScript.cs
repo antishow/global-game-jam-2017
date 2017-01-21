@@ -62,7 +62,6 @@ public class StreetScript : MonoBehaviour
 		{
 			float B1_size = (UnityEngine.Random.Range(-490, 490)) / 100;
 			float B2_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-
 			StreetParts.Add(Instantiate(Building, new Vector3(-5 - i, B1_size, b), Quaternion.identity));
 			StreetParts.Add(Instantiate(Building, new Vector3(2 + i, B2_size, b), Quaternion.identity));
 		}
@@ -70,6 +69,7 @@ public class StreetScript : MonoBehaviour
 
 	private void SideStreetB (float b)
 	{
+
 		StreetParts.Add(Instantiate(RoadIntersection, new Vector3(-1.5f, 0, b), Quaternion.identity));
 
 		for (int i = 0; i < SideStreetCount; i++)
