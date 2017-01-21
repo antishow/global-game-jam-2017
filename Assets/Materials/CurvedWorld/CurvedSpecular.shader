@@ -12,7 +12,11 @@ Shader "Custom/CurvedWorldSpec" {
         _BumpMap ("Normalmap", 2D) = "bump" {}
         _Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
         // Degree of curvature
-        _Curvature ("Curvature", Float) = 0.001
+        _Curvature ("Curl Over X", Float) = 0.001
+        _Curvature2 ("Twist Over Z", Float) = 0.001
+        _Curvature3 ("Curve Over Y", Float) = 0.001
+        _Curvature4 ("Scale Width", Float) = 0.001
+        //_Curvature5 ("Sin", Float) = 0.001
     }
     SubShader {
         Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
@@ -28,11 +32,15 @@ Shader "Custom/CurvedWorldSpec" {
         // Access the shaderlab properties
         uniform sampler2D _MainTex;
         uniform float _Curvature;
+        uniform float _Curvature2;
+        uniform float _Curvature3;
+        uniform float _Curvature4;
+        uniform float _Curvature5;
         sampler2D _BumpMap;
         fixed4 _Color;
         half _Shininess;
         sampler2D _SpecMap; // New specular texture declaration so we can sample it.
- 
+ 		
         // Basic input structure to the shader function
         // requires only a single set of UV texture mapping coordinates
         struct Input {
@@ -52,7 +60,16 @@ Shader "Custom/CurvedWorldSpec" {
             // Reduce the y coordinate (i.e. lower the "height") of each vertex based
             // on the square of the distance from the camera in the z axis, multiplied
             // by the chosen curvature factor
-            vv = float4( 0.0f, (vv.z * vv.z) * - _Curvature, 0.0f, 0.0f );
+
+            float4 combined = float4( 0.0f, (vv.z * vv.z) * - _Curvature, 0.0f, 0.0f );
+            combined += float4( 0.0f,                          (vv.z * vv.x) * - _Curvature2, 0.0f, 0.0f );
+            combined += float4( (vv.z * vv.z) * - _Curvature3, 0.0f,                          0.0f, 0.0f );
+            combined += float4( (vv.z * vv.x) * - _Curvature4, 0.0f,                          0.0f, 0.0f );
+
+            //float wave = sin(vv.z / (1000 * _Curvature5)) * 20;
+            //combined += float4( 0.0f,     					   wave,                          0.0f, 0.0f );
+
+            vv = combined;
  
             // Now apply the offset back to the vertices in model space
             v.vertex += mul(unity_WorldToObject, vv);
