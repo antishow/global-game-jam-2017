@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StreetScript : MonoBehaviour {
-
-	 
+public class StreetScript : MonoBehaviour
+{
 	public int BlockSize;
 	public int StreetCount;
 	public int SideStreetCount;
@@ -13,7 +12,8 @@ public class StreetScript : MonoBehaviour {
 	public GameObject Road;
 	public GameObject Building;
 	public GameObject RoadIntersection;
-	
+	public List<GameObject> StreetParts;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -31,7 +31,10 @@ public class StreetScript : MonoBehaviour {
 		for (int i = 0; i < blocks; i++)
 		{
 			BuildBlock(i);
-
+		}
+		foreach (GameObject s in StreetParts)
+		{
+			s.transform.parent = this.transform;
 		}
 	}
 
@@ -41,12 +44,12 @@ public class StreetScript : MonoBehaviour {
 		{
 			BuildSection(b, i);
 		}
-		BuildSideStreet(b );
+		BuildSideStreet(b);
 	}
 
 	private void BuildSideStreet (int b)
 	{
-		SideStreetA((b* BlockSize) + BlockSize - 4);
+		SideStreetA((b * BlockSize) + BlockSize - 4);
 		SideStreetB((b * BlockSize) + BlockSize - 2.5f);
 		SideStreetA((b * BlockSize) + BlockSize - 1);
 		SideStreetC((b * BlockSize) + BlockSize);
@@ -59,57 +62,44 @@ public class StreetScript : MonoBehaviour {
 		{
 			float B1_size = (UnityEngine.Random.Range(-490, 490)) / 100;
 			float B2_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-
-			GameObject temp1 = Instantiate(Building, new Vector3(-4-i, B1_size, b  ), Quaternion.identity);
-			GameObject temp2 = Instantiate(Building, new Vector3(1+i, B2_size, b  ), Quaternion.identity);
-			temp1.transform.parent = this.transform;
-			temp2.transform.parent = this.transform;
+			StreetParts.Add(Instantiate(Building, new Vector3(-5 - i, B1_size, b), Quaternion.identity));
+			StreetParts.Add(Instantiate(Building, new Vector3(2 + i, B2_size, b), Quaternion.identity));
 		}
 	}
 
 	private void SideStreetB (float b)
 	{
-		GameObject temp = Instantiate(RoadIntersection, new Vector3(-1.5f, 0, b), Quaternion.identity);
-		temp.transform.parent = this.transform;
+
+		StreetParts.Add(Instantiate(RoadIntersection, new Vector3(-1.5f, 0, b), Quaternion.identity));
 
 		for (int i = 0; i < SideStreetCount; i++)
 		{
-			GameObject temp1 = Instantiate(Road, new Vector3(-3 - i, 0, b), Quaternion.Euler(0,90,0));
-			GameObject temp2 = Instantiate(Road, new Vector3(i, 0, b), Quaternion.Euler(0, 90, 0));
-			temp1.transform.parent = this.transform;
-			temp2.transform.parent = this.transform;
+			StreetParts.Add(Instantiate(Road, new Vector3(-3 - i, 0, b), Quaternion.Euler(0, 90, 0)));
+			StreetParts.Add(Instantiate(Road, new Vector3(i, 0, b), Quaternion.Euler(0, 90, 0)));
 		}
 	}
 
 	private void SideStreetA (int b)
 	{
-		GameObject temp = Instantiate(Road, new Vector3(-1.5f, 0, b), Quaternion.identity);
-		temp.transform.parent = this.transform;
-		
+		StreetParts.Add(Instantiate(Road, new Vector3(-1.5f, 0, b), Quaternion.identity));
+
 		for (int i = 0; i < SideStreetCount; i++)
 		{
-			GameObject temp1 = Instantiate(Sidewalk, new Vector3(-3 - i, 0, b), Quaternion.identity);
-			GameObject temp2 = Instantiate(Sidewalk, new Vector3(i, 0, b), Quaternion.identity);
-			temp1.transform.parent = this.transform;
-			temp2.transform.parent = this.transform;
+			StreetParts.Add(Instantiate(Sidewalk, new Vector3(-3 - i, 0, b), Quaternion.identity));
+			StreetParts.Add(Instantiate(Sidewalk, new Vector3(i, 0, b), Quaternion.identity));
 		}
 	}
 
 	private void BuildSection (int b, int i)
 	{
-		float B1_size =( UnityEngine.Random.Range(-490, 490))/100;
-		float B2_size = (UnityEngine.Random.Range(-490, 490))/100;
+		float B1_size = (UnityEngine.Random.Range(-490, 490)) / 100;
+		float B2_size = (UnityEngine.Random.Range(-490, 490)) / 100;
 
-		GameObject temp = Instantiate(Building, new Vector3(-4, B1_size, b * BlockSize + i), Quaternion.identity);
-		GameObject temp1 = Instantiate(Building, new Vector3(1, B2_size, b * BlockSize + i), Quaternion.identity);
-		GameObject temp2 = Instantiate(Sidewalk, new Vector3(-3, 0, b * BlockSize + i), Quaternion.identity);
-		GameObject temp3 = Instantiate(Sidewalk, new Vector3(0, 0, b * BlockSize + i), Quaternion.identity);
-		GameObject temp4 = Instantiate(Road, new Vector3(-1.5f, 0, b * BlockSize + i), Quaternion.identity);
-		temp.transform.parent = this.transform;
-		temp1.transform.parent = this.transform;
-		temp2.transform.parent = this.transform;
-		temp3.transform.parent = this.transform;
-		temp4.transform.parent = this.transform;
+		StreetParts.Add(Instantiate(Building, new Vector3(-4, B1_size, b * BlockSize + i), Quaternion.identity));
+		StreetParts.Add(Instantiate(Building, new Vector3(1, B2_size, b * BlockSize + i), Quaternion.identity));
+		StreetParts.Add(Instantiate(Sidewalk, new Vector3(-3, 0, b * BlockSize + i), Quaternion.identity));
+		StreetParts.Add(Instantiate(Sidewalk, new Vector3(0, 0, b * BlockSize + i), Quaternion.identity));
+		StreetParts.Add(Instantiate(Road, new Vector3(-1.5f, 0, b * BlockSize + i), Quaternion.identity));
 	}
 }
 
