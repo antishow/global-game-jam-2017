@@ -31,7 +31,17 @@ public class PlayerController : MonoBehaviour {
 		InvokeRepeating("NudgeConfidence", 0, 0.0166f);
 	}
 
+	private bool nudgeUpwards = true;
+
 	void NudgeConfidence () {
-		Confidence = (Confidence + 0.005f) % 1;
+		float nudge = 0.0005f;
+		if(!nudgeUpwards){
+			nudge *= -1;
+		}
+
+		Confidence += nudge;
+		if(Confidence == 1 || Confidence == 0){
+			nudgeUpwards = !nudgeUpwards;
+		}
 	}
 }
