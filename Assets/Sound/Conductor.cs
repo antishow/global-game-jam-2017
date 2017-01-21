@@ -7,6 +7,7 @@ public class Conductor : MonoBehaviour {
 	public AudioSource[] Tracks;
 	public float[] TrackMixinPoints;
 	public float[] TrackVolumes;
+	public float TrackTime = 43.875f;
 
 	void Awake(){
 		_instance = this;
@@ -19,7 +20,7 @@ public class Conductor : MonoBehaviour {
 			track.time = 0;
 		}
 
-		Invoke("Play", 43.79f);
+		Invoke("Play", TrackTime);
 	}
 
 	public static void MixForConfidence(float confidence){
@@ -34,10 +35,6 @@ public class Conductor : MonoBehaviour {
 	}
 
 	private float GetVolumeLevelForTrack(int trackIndex, float confidence){
-		if(trackIndex == 0){
-			return 1.0f;
-		}
-
 		float mixin = TrackMixinPoints[trackIndex];
 		float range = 1.0f - mixin;
 		float ret = (confidence - mixin) / range;
