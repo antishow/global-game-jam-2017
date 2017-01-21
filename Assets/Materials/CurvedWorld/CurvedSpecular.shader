@@ -16,7 +16,7 @@ Shader "Custom/CurvedWorldSpec" {
         _Curvature2 ("Twist Over Z", Float) = 0.001
         _Curvature3 ("Curve Over Y", Float) = 0.001
         _Curvature4 ("Scale Width", Float) = 0.001
-        //_Curvature5 ("Sin", Float) = 0.001
+        _Curvature5 ("Sin", Float) = 0.001
     }
     SubShader {
         Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
@@ -40,7 +40,7 @@ Shader "Custom/CurvedWorldSpec" {
         fixed4 _Color;
         half _Shininess;
         sampler2D _SpecMap; // New specular texture declaration so we can sample it.
- 		
+ 
         // Basic input structure to the shader function
         // requires only a single set of UV texture mapping coordinates
         struct Input {
@@ -66,8 +66,8 @@ Shader "Custom/CurvedWorldSpec" {
             combined += float4( (vv.z * vv.z) * - _Curvature3, 0.0f,                          0.0f, 0.0f );
             combined += float4( (vv.z * vv.x) * - _Curvature4, 0.0f,                          0.0f, 0.0f );
 
-            //float wave = sin(vv.z / (1000 * _Curvature5)) * 20;
-            //combined += float4( 0.0f,     					   wave,                          0.0f, 0.0f );
+            float wave = sin(vv.z / (1000 * _Curvature5)) * 3;
+            combined += float4( 0.0f,     					   wave,                          0.0f, 0.0f );
 
             vv = combined;
  
