@@ -10,6 +10,16 @@ public class Conductor : MonoBehaviour {
 
 	void Awake(){
 		_instance = this;
+		Play();
+	}
+
+	private void Play(){
+		for(int i=0; i<Tracks.Length; i++){
+			AudioSource track = Tracks[i];
+			track.time = 0;
+		}
+
+		Invoke("Play", 43.79f);
 	}
 
 	public static void MixForConfidence(float confidence){

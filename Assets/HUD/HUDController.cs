@@ -22,13 +22,11 @@ public class HUDController : MonoBehaviour {
 
 	public static void UpdatePlayerConfidence(float confidence){
 		float theta = Mathf.Lerp(ConfidenceMeterRotationExtent, -ConfidenceMeterRotationExtent, confidence);
-		Debug.LogFormat("Set Confidence Level to {0} ({1})", confidence, theta);
 		_instance.ConfidenceMeter.transform.rotation = Quaternion.Euler(0, 0, theta);
 		Conductor.MixForConfidence(confidence);
 	}
 
 	public static void UpdatePlayerExpression(int expression){
-		Debug.LogFormat("Set sprite to {0}", expression);
 		_instance.PlayerPortrait.sprite = _instance.PlayerPortraits[expression];
 	}
 }

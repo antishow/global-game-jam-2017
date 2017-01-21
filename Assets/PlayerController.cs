@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Start () {
-		Confidence = 0.0f;
+		Confidence = 1.0f;
 		InvokeRepeating("NudgeConfidence", 0, 0.0166f);
 	}
 
