@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Tobii.EyeTracking;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour {
-	
+
+	public Animator HandWaveAnim; 
 	public Vector3 PlayerPosition;
 	public float MoveSpeed;
 	public Vector2 WalkMotionSpeed;
@@ -12,8 +14,7 @@ public class PlayerMove : MonoBehaviour {
 	public Vector2 WalkMotionfactor; 
 	Vector3 WalkMotionOffset = new Vector3(0, 0, 0);
  
-	public Transform ArmMove;
-        public Transform ArmRotate;
+	public Transform ArmMove; 
 	//public float ArmPosition;
 	public float ArmMaxHeight;
 	public float ArmMinHeight;
@@ -28,14 +29,20 @@ public class PlayerMove : MonoBehaviour {
 	public float Down = 0;
 	public float Wave = 0;
 	 
-	public float WaveMagnitude = 0; 
+	public float WaveMagnitude = 0;
+
+	public Vector2 EyeGaze;
+	public float GazeMagnitude;
+	
+  
 
 
 
 	// Use this for initialization
-	void Start () {
-		
-	}
+	void Start ()
+	{
+		 
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -43,17 +50,38 @@ public class PlayerMove : MonoBehaviour {
 		SetPosition();
 		SetWalkMotion();
 		GetInput();
-		SetArmHeight();
-		 
+		if (GetGaze())
+		{
+			ChechGazeCollide();
+		}
+        SetArmHeight();
+		ShowHandWave();
+
 	}
 
-	
+	private void ChechGazeCollide ()
+	{
+		Ray rayToPlayerPos = Camera.main.ScreenPointToRay(EyeGaze);
+		RaycastHit hitInfo;
+		if (Physics.Raycast(rayToPlayerPos, out hitInfo, 1000))
+		{
+			
+			//assuming only npcs have colliders any hit could be a stare
+
+		}
+
+    }
+
+	private void ShowHandWave ()
+	{
+		HandWaveAnim.SetFloat("waveMagnitude", WaveMagnitude);
+    }
 
 	private void SetArmHeight ()
 	{
 		ArmMove.transform.localPosition = Vector3.Lerp(ArmMove.transform.localPosition, new Vector3(0, ArmHeight, 0),.1f);
-		float ArmRotation = (ArmMaxHeight - ArmHeight) * ArmMinRotation;
-		ArmRotate.transform.rotation = Quaternion.Euler(ArmRotation, 0, 0);
+		//float ArmRotation = (ArmMaxHeight - ArmHeight) * ArmMinRotation;
+		//ArmRotate.transform.rotation = Quaternion.Euler(ArmRotation, 0, 0);
 	}
 
 	private void GetInput ()
@@ -62,6 +90,7 @@ public class PlayerMove : MonoBehaviour {
 		{
 			Wave = WaveWait;
 			Down = DownWait;
+			Debug.Log("keyup");
 		}
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
@@ -93,7 +122,7 @@ public class PlayerMove : MonoBehaviour {
 		}
 		else
 		{
-			WaveMagnitude = 0;
+			WaveMagnitude -=Time.deltaTime;
 		}
 		if (Down>0)
 		{
@@ -125,5 +154,15 @@ public class PlayerMove : MonoBehaviour {
 		PlayerPosition.z += MoveSpeed * Time.deltaTime;
 		
 		this.transform.position = PlayerPosition+WalkMotionOffset;
+	}
+	private bool GetGaze ()//may need to validate getgaze before using 
+	{
+		 EyeGaze = EyeTracking.GetGazePoint().Screen;
+		if (EyeGaze.x>0&&EyeGaze.y>0&&EyeGaze.x<Screen.width&&EyeGaze.y<Screen.height)
+		{
+			return true;
+		}
+		return false;
+
 	}
 }
