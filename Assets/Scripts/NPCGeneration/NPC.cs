@@ -45,6 +45,7 @@ public class NPC : MonoBehaviour {
 	public Texture[] upsetTextures;
 
 	public GameObject bodyGameObject;
+	public CommitmentMeterScript commitmentObject;
 	public float gazeValue;
 	// Use this for initialization
 	void Start () {
@@ -109,7 +110,7 @@ public class NPC : MonoBehaviour {
 		if(thingToLookAt != null){
 			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
 		}
-		
+
 		if(goingToWave){
 			if(goingToWaveAtPlayer && Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
@@ -136,6 +137,9 @@ public class NPC : MonoBehaviour {
 		if(isWaving){
 			//and player is waving
 			waveAnim.SetBool("Wave",true);
+			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
+			float commitVal = commitmentObject.GetCommitment(true);
+			Global.Score += (int)commitVal;
 		} else {
 			//Bad
 		}
