@@ -4,37 +4,65 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StreetScript : MonoBehaviour
-{
-	Transform PlayerLocation;
+{ 
 	public int BlockSize;
 	public int StreetCount;
-	public int SideStreetCount;
+	 
 	public GameObject Sidewalk;
-	public GameObject Road;
-	public GameObject Building;
+	public GameObject CrossStreet;
+	public GameObject[] Buildings;
 	public GameObject RoadIntersection;
-	public List<GameObject> StreetParts;  
+	public List<GameObject> StreetParts;
+
+	  int BuildingSize = 16;
+	public int FullStreetLength = 0;
+	public int CurrentLoopCheck = 10;
+
  
 	// Use this for initialization
 	void Start ()
-	{
-		PlayerLocation = Camera.main.transform;
+	{ 
 		BuildStreet(StreetCount);
+		FullStreetLength = StreetCount * BlockSize*BuildingSize;
 	}
 
 
 	// Update is called once per frame
 	void Update ()
 	{
-		 
+		CheckLoop();
 	}
 
-	 
+	private void CheckLoop ()
+	{ float zBuffer = BuildingSize;
+        int CurrentZ =Mathf.FloorToInt(Camera.main.transform.position.z );
+		Debug.Log(CurrentZ + " " + CurrentLoopCheck);
+		if (CurrentLoopCheck+zBuffer < CurrentZ )//stuff thats 2 behind player
+		{
+			CurrentLoopCheck = CurrentZ;
+			MoveItemsBehindPlayer(CurrentZ- zBuffer);
+		}
+
+	}
+
+	private void MoveItemsBehindPlayer (float Waterline)
+	{
+		 
+		foreach (GameObject p in StreetParts)
+		{ Vector3 pPosition = p.transform.position;
+            if (pPosition.z<Waterline)
+			{
+				pPosition.z += FullStreetLength;
+				p.transform.position = pPosition;
+			}
+			
+		}
+	}
 
 	private void BuildStreet (int streets)
 	{
 		int HalfBlock = Mathf.FloorToInt( streets / 2); 
-        for (int i = 0; i < BlockSize; i++)
+        for (int i = 0; i < streets; i++)
 		{
 			BuildBlock(i); 
 		}
@@ -48,69 +76,56 @@ public class StreetScript : MonoBehaviour
 
 	private void BuildBlock (int b)
 	{
-		for (int i = 0; i < BlockSize - 4; i++)
+		for (int i = 0; i < BlockSize -1; i++)
 		{
 			BuildSection(b, i);
 		}
 		BuildSideStreet(b);
 	}
 
-	private void BuildSideStreet (int b)
+	private void BuildSideStreet (int block)
 	{
-		SideStreetA((b * BlockSize) + BlockSize - 4);
-		SideStreetB((b * BlockSize) + BlockSize - 2.5f);
-		SideStreetA((b * BlockSize) + BlockSize - 1);
-		SideStreetC((b * BlockSize) + BlockSize);
+		SideStreetA((block * BlockSize)+ (BlockSize-1) );
+		SideStreetB((block * BlockSize) + BlockSize  );
 
 	}
-
-	private void SideStreetC (int b)
+	private void SideStreetA (float b)
 	{
-		for (int i = 0; i < SideStreetCount; i+=2)
-		{
-			float B1_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-			float B2_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-			StreetParts.Add(Instantiate(Building, new Vector3(-6f - i, B1_size, b+.5f), Quaternion.identity));
-			StreetParts.Add(Instantiate(Building, new Vector3(3.5f + i, B2_size, b+.5f), Quaternion.identity));
-		}
-	}
+		StreetParts.Add(Instantiate(CrossStreet, new Vector3(0, 0, b* BuildingSize), Quaternion.identity));
+	}	 
 
 	private void SideStreetB (float b)
 	{
-
-		StreetParts.Add(Instantiate(RoadIntersection, new Vector3(-1.5f, 0, b), Quaternion.identity));
-
-		for (int i = 0; i < SideStreetCount; i++)
+		for (int i = 0; i < 7; i ++)
 		{
-			StreetParts.Add(Instantiate(Road, new Vector3(-3 - i, 0, b), Quaternion.Euler(0, 90, 0)));
-			StreetParts.Add(Instantiate(Road, new Vector3(i, 0, b), Quaternion.Euler(0, 90, 0)));
+			int B1 = (UnityEngine.Random.Range(0, Buildings.Length));
+			int B2 = (UnityEngine.Random.Range(0, Buildings.Length));
+			float zLoc = (b   * 16);
+			StreetParts.Add(Instantiate(Buildings[B1], new Vector3((i+1)* BuildingSize, 0, zLoc), Quaternion.Euler(-90, 0, -90)));
+			GameObject GO = Instantiate(Buildings[B2], new Vector3((-3- i)* BuildingSize, 0, zLoc), Quaternion.Euler(-90, 0, -90));
+			Vector3 SCALE = GO.transform.localScale;
+			SCALE.y *= -1;
+			GO.transform.localScale = SCALE;
+			StreetParts.Add(GO);
 		}
+
 	}
 
-	private void SideStreetA (int b)
-	{
-		StreetParts.Add(Instantiate(Road, new Vector3(-1.5f, 0, b), Quaternion.identity));
-
-		for (int i = 0; i < SideStreetCount; i++)
-		{
-			StreetParts.Add(Instantiate(Sidewalk, new Vector3(-3 - i, 0, b), Quaternion.identity));
-			StreetParts.Add(Instantiate(Sidewalk, new Vector3(i, 0, b), Quaternion.identity));
-		}
-	}
+	
 
 	private void BuildSection (int b, int i)
 	{
-		float B1_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-		float B2_size = (UnityEngine.Random.Range(-490, 490)) / 100;
-		if (i%2==0)
-		{
-			StreetParts.Add(Instantiate(Building, new Vector3(-4.5f, B1_size, b * BlockSize + i+.5f), Quaternion.identity));
-			StreetParts.Add(Instantiate(Building, new Vector3(1.5f, B2_size, b * BlockSize + i + .5f), Quaternion.identity));
-		}
-		
-		StreetParts.Add(Instantiate(Sidewalk, new Vector3(-3, 0, b * BlockSize + i), Quaternion.identity));
-		StreetParts.Add(Instantiate(Sidewalk, new Vector3(0, 0, b * BlockSize + i), Quaternion.identity));
-		StreetParts.Add(Instantiate(Road, new Vector3(-1.5f, 0, b * BlockSize + i), Quaternion.identity));
+		int B1  = (UnityEngine.Random.Range(0, Buildings.Length))  ;
+		int B2  = (UnityEngine.Random.Range(0, Buildings.Length))  ;
+		float zLoc =( b * BlockSize + i)* BuildingSize;
+        StreetParts.Add(Instantiate(Buildings[B1], new Vector3(0, 0, zLoc), Quaternion.Euler(-90,0,-90)));
+		GameObject GO = Instantiate(Buildings[B2], new Vector3(-32, 0, zLoc), Quaternion.Euler(-90, 0, -90));
+		Vector3 SCALE = GO.transform.localScale;
+		SCALE.y *= -1;
+		GO.transform.localScale = SCALE;
+		StreetParts.Add(GO);
+		StreetParts.Add(Instantiate(Sidewalk, new Vector3(0, 0, zLoc), Quaternion.identity));
+		 
 	}
 }
 
