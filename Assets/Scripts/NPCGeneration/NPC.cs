@@ -38,6 +38,9 @@ public class NPC : MonoBehaviour {
 
 	public GameObject headCube;
 	public GameObject thingToLookAt;
+	public Texture defaultTexture;
+	public Texture happyTexture;
+	public Texture[] upsetTextures;
 
 	public GameObject bodyGameObject;
 	public float gazeValue;
@@ -85,6 +88,7 @@ public class NPC : MonoBehaviour {
 			temp.transform.parent = this.transform;
 			temp.GetComponent<Renderer>().material.color = npcItems.pantsColor;
 		}
+		headCube.GetComponent<Renderer>().material.color = npcItems.skinColor;
 		bodyGameObject.GetComponent<Renderer>().material.color = npcItems.shirtColor;
 	}
 	
@@ -129,7 +133,11 @@ public class NPC : MonoBehaviour {
 		if(this.transform.position.z < playerObject.transform.position.z - 10){
 			Destroy(this.transform.gameObject);
 		}
-
+		if(isWaving){
+			//and player is waving
+		} else {
+			//Bad
+		}
 		gazeValue -= Time.deltaTime;
 	}
 
