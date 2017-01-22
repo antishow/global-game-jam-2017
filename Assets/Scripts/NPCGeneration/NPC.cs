@@ -39,6 +39,7 @@ public class NPC : MonoBehaviour {
 	public GameObject headCube;
 	public GameObject headBone;
 	public GameObject thingToLookAt;
+	public Animator waveAnim;
 	public Texture defaultTexture;
 	public Texture happyTexture;
 	public Texture[] upsetTextures;
@@ -47,6 +48,7 @@ public class NPC : MonoBehaviour {
 	public float gazeValue;
 	// Use this for initialization
 	void Start () {
+		waveAnim = this.GetComponent<Animator>();
 		if(playerObject == null){
 			playerObject = GameObject.FindWithTag("Player");
 		}
@@ -108,9 +110,12 @@ public class NPC : MonoBehaviour {
 			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
 		}
 
+				Debug.Log(goingToWave);
+				Debug.Log(Vector3.Distance(playerObject.transform.position, this.transform.position));
 		if(goingToWave){
-			if(Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
+			if(goingToWaveAtPlayer && Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
+				Debug.Log("Waving SHould be true");
 				isWaving = true;
 
 				// change animator state
@@ -119,11 +124,7 @@ public class NPC : MonoBehaviour {
 				//the NPC is walking at slow speed to try and flag the player down.
 				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSlowSpeed * Time.deltaTime));
 			} else {
-				if(goingToWaveAtPlayer){
-					//Make Eye Contact if going to wave at player
-				} else if(goingToWave && !goingToWaveAtPlayer){
-					//Eye Contact with other thing
-				}
+
 				//the NPC is walking at normal speed 
 				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
 			}
@@ -137,6 +138,7 @@ public class NPC : MonoBehaviour {
 		}
 		if(isWaving){
 			//and player is waving
+			waveAnim.SetBool("Wave",true);
 		} else {
 			//Bad
 		}
