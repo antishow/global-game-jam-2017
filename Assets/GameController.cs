@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour {
+	private static GameController _instance;
 
-	// Use this for initialization
-	void Start () {
-		
+	void Awake(){
+		_instance = this;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public static void GameOver(){
+		print("GAME OVER");
+		CameraEffectsController.IrisOut();
+		_instance.Invoke("OnIrisOut", CameraEffectsController.IrisTime * 1.1f);
+	}
+
+	public void OnIrisOut(){
+		print("Game Over. Play again?");
 	}
 }

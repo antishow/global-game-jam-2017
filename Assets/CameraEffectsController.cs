@@ -21,7 +21,7 @@ public class CameraEffectsController : MonoBehaviour {
     public float ChromaMax = 0.4f;
 
     public static float IrisTime = 2.0f;
-    private static float IrisStartTime = 0;
+    private static float IrisStartTime;
     private static bool irisMovingIn = true;
     private static bool irisActive = false;
 
@@ -61,18 +61,20 @@ public class CameraEffectsController : MonoBehaviour {
 
     public static void IrisOut(){
         StartIrisEffect(false);
-
     }
 
     public static void StartIrisEffect(bool movingIn){
+        IrisStartTime = Time.time;
         irisMovingIn = movingIn;
         irisActive = true;
-        IrisStartTime = Time.time;
     }
 
     private static void ApplyIrisEffect(){
         float timeElapsed = Mathf.Clamp(Time.time - IrisStartTime, 0.0001f, IrisTime);
-        float intensity = 1 - timeElapsed / IrisTime;
+        float intensity = timeElapsed / IrisTime;
+        if(irisMovingIn){
+            intensity = 1 - intensity;
+        }
 
         Vignette.intensity = intensity;
         if(Vignette.intensity >= 1 || Vignette.intensity <= 0){
