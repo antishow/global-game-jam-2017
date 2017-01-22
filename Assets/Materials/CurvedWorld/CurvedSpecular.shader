@@ -17,6 +17,8 @@ Shader "Custom/CurvedWorldSpec" {
         _Curvature3 ("Curve Over Y", Float) = 0.001
         _Curvature4 ("Scale Width", Float) = 0.001
         _Curvature5 ("Sin", Float) = 0.001
+        _Curvature6 ("Sin Offset", Float) = 0.001
+        _Curvature7 ("Sin Vert Offset", Float) = 0.001
     }
     SubShader {
         Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
@@ -36,6 +38,8 @@ Shader "Custom/CurvedWorldSpec" {
         uniform float _Curvature3;
         uniform float _Curvature4;
         uniform float _Curvature5;
+        uniform float _Curvature6;
+        uniform float _Curvature7;
         sampler2D _BumpMap;
         fixed4 _Color;
         half _Shininess;
@@ -66,7 +70,7 @@ Shader "Custom/CurvedWorldSpec" {
             combined += float4( (vv.z * vv.z) * - _Curvature3, 0.0f,                          0.0f, 0.0f );
             combined += float4( (vv.z * vv.x) * - _Curvature4, 0.0f,                          0.0f, 0.0f );
 
-            float wave = sin(vv.z / (1000 * _Curvature5)) * 3;
+            float wave = (sin((vv.z + _Curvature6) / (1000 * _Curvature5)) * 3) + _Curvature7;
             combined += float4( 0.0f,     					   wave,                          0.0f, 0.0f );
 
             vv = combined;
