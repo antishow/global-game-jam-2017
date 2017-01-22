@@ -1,29 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour {
-	public GameObject menuObject;
-	public string buttonString;
-	// Use this for initialization
-	void Start () {
-		
+	public GameObject pauseMenu;
+
+	public string pauseButton;
+	private GameObject GameOverMenu;
+
+	void Awake(){
+		GameOverMenu = transform.Find("EventSystem/GameOverMenu").gameObject;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetButtonDown(buttonString)){
-			menuObject.active = !menuObject.active;
-			Global.pause = menuObject.active;
+		if(Input.GetButtonDown(pauseButton)){
+			pauseMenu.active = !pauseMenu.active;
+			Global.pause = pauseMenu.active;
+
+			if(pauseMenu.active){
+				Conductor.PauseDamper();
+			} else {
+				Conductor.UnpauseDamper();
+			}
 		}
 	}	
 
+	public void DisplayGameOverScreen(){
+		GameOverMenu.SetActive(true);
+	}
+
 	public void CloseMenu () {
-		menuObject.active = false;
+		pauseMenu.active = false;
 		Global.pause = false;
 	}
 
 	public void ExitGame () {
 		Application.Quit();
+	}
+
+	public void TryAgain(){
+		SceneManager.LoadScene("StreetScene");
 	}
 }
