@@ -37,6 +37,7 @@ public class NPC : MonoBehaviour {
 	public static GameObject playerObject;
 
 	public GameObject headCube;
+	public GameObject headBone;
 	public GameObject thingToLookAt;
 	public Texture defaultTexture;
 	public Texture happyTexture;
@@ -94,6 +95,7 @@ public class NPC : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		headCube.transform.position = headBone.transform.position + new Vector3(0,0,0);
 		if(thingToLookAt == null && playerObject != null){
 			if(goingToWaveAtPlayer){
 				thingToLookAt = playerObject;

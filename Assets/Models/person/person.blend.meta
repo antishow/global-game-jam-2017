@@ -30,6 +30,7 @@ ModelImporter:
     100044: UpperTorso
     100046: Vert
     100048: Head
+    100050: Vert_001
     400000: Armature
     400002: Cube
     400004: L_Foot
@@ -55,15 +56,25 @@ ModelImporter:
     400044: UpperTorso
     400046: Vert
     400048: Head
+    400050: Vert_001
     2300000: Cube
     2300002: Plane
+    2300004: Vert_001
     3300000: Cube
     3300002: Plane
+    3300004: Vert_001
     4300000: Cube
     4300002: Plane
     4300004: Vert
+    4300006: Vert_001
     7400000: Default Take
     7400002: ArmatureAction_001
+    7400004: ArmatureAction
+    7400006: Bees
+    7400008: Walk
+    7400010: Walk_and_wave
+    7400012: Wave
+    7400014: Wave_2hands
     9500000: //RootNode
     13700000: Vert
   materials:
