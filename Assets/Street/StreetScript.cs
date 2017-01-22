@@ -36,7 +36,7 @@ public class StreetScript : MonoBehaviour
 	private void CheckLoop ()
 	{ float zBuffer = BuildingSize;
         int CurrentZ =Mathf.FloorToInt(Camera.main.transform.position.z );
-		Debug.Log(CurrentZ + " " + CurrentLoopCheck);
+ 
 		if (CurrentLoopCheck+zBuffer < CurrentZ )//stuff thats 2 behind player
 		{
 			CurrentLoopCheck = CurrentZ;
