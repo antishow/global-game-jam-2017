@@ -32,4 +32,4 @@ sysinfo.txt
 *.unitypackage
 
 # Blender
-*.blend1
+*.blend1*
