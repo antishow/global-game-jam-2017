@@ -17,10 +17,26 @@ public class Global : MonoBehaviour {
 	public static bool pause;
 	private MenuController menuController;
 
+	protected static int _score;
+	private Text ScoreText;
+	public static int Score{
+		get { return _score; }
+		set { 
+			_score = value;
+			if(value > 0){
+				_instance.ScoreText.text = _score.ToString();
+			} else {
+				_instance.ScoreText.text = "";
+			}
+		}
+	}
+
 	void Awake(){
 		_instance = this;
 		menuController = GetComponent<MenuController>();
+		ScoreText = transform.Find("HUD/Score").GetComponent<Text>();
 	}
+	
 	void Start () {
 		JsonFileReader.checkLoading();
 		if(JsonFileReader.checkFileWithContent("/Options/Options.json", "{ \"headbobActive\":true,\"showTutorial\":true }")){
