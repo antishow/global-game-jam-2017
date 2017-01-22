@@ -35,6 +35,11 @@ public class NPC : MonoBehaviour {
 	public GameObject[] shirtPrefabs;
 	public GameObject[] pantPrefabs;
 	public static GameObject playerObject;
+
+	public GameObject headCube;
+	public GameObject thingToLookAt;
+
+	public float gazeValue;
 	// Use this for initialization
 	void Start () {
 		if(playerObject == null){
@@ -46,7 +51,7 @@ public class NPC : MonoBehaviour {
 		if(goingToWave && Random.Range(0.0f, 100.0f) >= chanceToWaveAtPlayer){
 			goingToWaveAtPlayer = true;
 		}
-
+		
 		npcItems.hairID = (NPCHair) Random.Range(0,hairPrefabs.Length);
 		npcItems.earsID = (NPCEars) Random.Range(0,earPrefabs.Length);
 		npcItems.noseID = (NPCNose) Random.Range(0,nosePrefabs.Length);
@@ -85,6 +90,17 @@ public class NPC : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(thingToLookAt == null && playerObject != null){
+			if(goingToWaveAtPlayer){
+				thingToLookAt = playerObject;
+			} else if(goingToWave){
+				thingToLookAt = playerObject.GetComponent<LookAtJunkList>().junkToLookAt[Random.Range(0,playerObject.GetComponent<LookAtJunkList>().junkToLookAt.Count-1)];
+			}
+		} 
+
+		if(thingToLookAt != null){
+			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
+		}
 		if(goingToWave){
 			if(Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
@@ -108,6 +124,8 @@ public class NPC : MonoBehaviour {
 		if(this.transform.position.z < playerObject.transform.position.z - 10){
 			Destroy(this.transform.gameObject);
 		}
+
+		gazeValue -= Time.deltaTime;
 	}
 
 	public Color GenerateColor(){
@@ -116,6 +134,10 @@ public class NPC : MonoBehaviour {
 
 	public Color GenerateColor(Color hint){
 		return new Color(hint.r + Random.Range(-0.06f, 0.06f), hint.g + Random.Range(-0.06f, 0.06f), hint.b + Random.Range(-0.06f, 0.06f));
+	}
+
+	public void GazeInfo(float gazeAmount){
+		gazeValue = gazeAmount;
 	}
 }
 
