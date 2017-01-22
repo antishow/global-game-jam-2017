@@ -86,11 +86,12 @@ public class PlayerMove : MonoBehaviour {
 	private void ShowHandWave ()
 	{
 		HandWaveAnim.SetFloat("waveMagnitude", WaveMagnitude);
-    }
+		HandWaveAnim.SetFloat("armMagnitude", ArmMagnitude);
+	}
 
 	private void SetArmHeight ()
 	{
-		ArmMove.transform.localPosition = Vector3.Lerp(ArmMove.transform.localPosition, new Vector3(0, ArmHeight, 0),.1f);
+		ArmMove.transform.localPosition = Vector3.Lerp(ArmMove.transform.localPosition, new Vector3(3.7f, ArmHeight, 10),.1f);
 		//float ArmRotation = (ArmMaxHeight - ArmHeight) * ArmMinRotation;
 		//ArmRotate.transform.rotation = Quaternion.Euler(ArmRotation, 0, 0);
 	}
