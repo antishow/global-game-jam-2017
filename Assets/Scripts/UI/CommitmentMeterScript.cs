@@ -23,11 +23,11 @@ public class CommitmentMeterScript : MonoBehaviour {
 	void Update () {
 	ArmMeter.SetValue(PlayerMoveScript.ArmMagnitude);
 	GazeMeter.SetValue(PlayerMoveScript.GazeMagnitude);
-	GazeMeter.SetValue(PlayerMoveScript.WaveMagnitude);
+	WaveMeter.SetValue(PlayerMoveScript.WaveMagnitude);
 	}
 	public float GetCommitment (bool Success)
 	{
-		float RETURN = PlayerMoveScript.ArmMagnitude+PlayerMoveScript.GazeMagnitude +PlayerMoveScript.WaveMagnitude;
+		float RETURN = Mathf.Clamp01( PlayerMoveScript.ArmMagnitude)+ Mathf.Clamp01(PlayerMoveScript.GazeMagnitude) + Mathf.Clamp01(PlayerMoveScript.WaveMagnitude);
 
 		return RETURN;
 	}
