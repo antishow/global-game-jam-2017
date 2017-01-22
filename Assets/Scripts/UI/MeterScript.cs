@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class MeterScript : MonoBehaviour {
 	[Range(0.0f, 1.0f)]
-	public float Value;
+	  float Value;
 	public Transform Middle;
 	public Transform Top;
+	public SpriteRenderer[] Sprites;
 	float Top_min = -1;
 	float Top_max = 1.11f;
 	float Middle_min = -1;
@@ -16,7 +17,17 @@ public class MeterScript : MonoBehaviour {
 	void Start () {
 		
 	}
-	
+	public void SetValue (float V)
+	{
+		Value = Mathf.Clamp01( V);
+	}
+	public void SetColor (Color C)
+	{
+		foreach (SpriteRenderer s in Sprites)
+		{
+			s.color = C;
+		}
+	}
 	// Update is called once per frame
 	void Update () {
 		Top.localPosition = new Vector3(0, (Top_max - Top_min) * Value + Top_min, -.1f);

@@ -22,8 +22,7 @@ public class PlayerMove : MonoBehaviour {
 	public Animator HandWaveAnim; 
 	public Vector3 PlayerPosition;
 	public float MoveSpeed;
-	public Vector2 WalkMotionSpeed;
-	//public float WalkMotionMagnitude;
+	public Vector2 WalkMotionSpeed; 
 	public Vector2 WalkMotionfactor; 
 	Vector3 WalkMotionOffset = new Vector3(0, 0, 0);
  
@@ -46,6 +45,7 @@ public class PlayerMove : MonoBehaviour {
 
 	public Vector2 EyeGaze;
 	public float GazeMagnitude;
+	public float GazeWait;
 
 	private bool IsArmMoving = false;
 	private bool IsArmMovingUp = false;
@@ -75,8 +75,9 @@ public class PlayerMove : MonoBehaviour {
 		RaycastHit hitInfo;
 		if (Physics.Raycast(rayToPlayerPos, out hitInfo, 1000))
 		{
-			
-			//assuming only npcs have colliders any hit could be a stare
+			Debug.Log(hitInfo.collider.tag);
+			GazeMagnitude += Time.deltaTime/2;
+			GazeWait = .5f;
 
 		}
 
@@ -139,6 +140,17 @@ public class PlayerMove : MonoBehaviour {
 		{
 			Down -= Time.deltaTime;
 		}
+		if (GazeWait > 0)
+		{
+			GazeWait -= Time.deltaTime;
+		}
+		else
+		{
+			if (GazeMagnitude>0)
+			{
+				GazeMagnitude -= Time.deltaTime;
+			}		 
+		}
 
 		float newMagnitude = Mathf.Clamp01(ArmMagnitude + dY);
 		dY = newMagnitude - ArmMagnitude;
@@ -173,7 +185,8 @@ public class PlayerMove : MonoBehaviour {
 	private void StartMovingArmUp(){
 		IsArmMovingUp = true;
 		IsArmMoving = true;
-		if(audioSource.isPlaying){
+		if(audioSource.isPlaying)
+		{
 			audioSource.Stop();
 		}
 		float iLerp = Mathf.InverseLerp(ArmMinHeight, ArmMaxHeight, ArmHeight);
