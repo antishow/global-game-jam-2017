@@ -34,6 +34,10 @@ ModelImporter:
     100052: R_UpperLeg
     100054: Torso
     100056: Vert_002
+    100058: Circle
+    100060: L_LowerLeg
+    100062: Plane
+    100064: RootControl
     400000: Armature
     400002: Bone_007
     400004: Bone_08
@@ -63,8 +67,19 @@ ModelImporter:
     400052: R_UpperLeg
     400054: Torso
     400056: Vert_002
+    400058: Circle
+    400060: L_LowerLeg
+    400062: Plane
+    400064: RootControl
+    2300000: Circle
+    2300002: Plane
+    3300000: Circle
+    3300002: Plane
     4300000: Vert_002
+    4300002: Plane
+    4300004: Circle
     7400000: Default Take
+    7400002: ArmatureAction
     9500000: //RootNode
     13700000: Vert_002
   materials:
