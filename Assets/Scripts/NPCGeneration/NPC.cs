@@ -140,8 +140,12 @@ public class NPC : MonoBehaviour {
 			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
 			float commitVal = commitmentObject.GetCommitment(true);
 			Global.Score += (int)commitVal;
+			playerObject.GetComponent<PlayerController>().NudgeConfidence(true, commitVal / 10f);
 		} else {
-			//Bad
+			//and player is waving Lose confidence
+			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
+			float commitVal = commitmentObject.GetCommitment(true);
+			playerObject.GetComponent<PlayerController>().NudgeConfidence(false, commitVal / 10f);
 		}
 		gazeValue -= Time.deltaTime;
 	}

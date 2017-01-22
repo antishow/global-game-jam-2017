@@ -75,6 +75,7 @@ ModelImporter:
     7400010: Walk_and_wave
     7400012: Wave
     7400014: Wave_2hands
+    7400016: Walk_nowave
     9500000: //RootNode
     13700000: Vert
   materials:
