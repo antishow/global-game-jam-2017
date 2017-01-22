@@ -39,6 +39,7 @@ public class NPC : MonoBehaviour {
 	public GameObject headCube;
 	public GameObject thingToLookAt;
 
+	public GameObject bodyGameObject;
 	public float gazeValue;
 	// Use this for initialization
 	void Start () {
@@ -84,8 +85,7 @@ public class NPC : MonoBehaviour {
 			temp.transform.parent = this.transform;
 			temp.GetComponent<Renderer>().material.color = npcItems.pantsColor;
 		}
-
-
+		bodyGameObject.GetComponent<Renderer>().material.color = npcItems.shirtColor;
 	}
 	
 	// Update is called once per frame
@@ -101,10 +101,15 @@ public class NPC : MonoBehaviour {
 		if(thingToLookAt != null){
 			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
 		}
+
 		if(goingToWave){
 			if(Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
 				isWaving = true;
+
+				// change animator state
+				//playerObject.
+
 				//the NPC is walking at slow speed to try and flag the player down.
 				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSlowSpeed * Time.deltaTime));
 			} else {

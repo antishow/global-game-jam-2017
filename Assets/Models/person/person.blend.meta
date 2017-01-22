@@ -29,6 +29,7 @@ ModelImporter:
     100042: R_UpperArm
     100044: UpperTorso
     100046: Vert
+    100048: Head
     400000: Armature
     400002: Cube
     400004: L_Foot
@@ -53,6 +54,7 @@ ModelImporter:
     400042: R_UpperArm
     400044: UpperTorso
     400046: Vert
+    400048: Head
     2300000: Cube
     2300002: Plane
     3300000: Cube
