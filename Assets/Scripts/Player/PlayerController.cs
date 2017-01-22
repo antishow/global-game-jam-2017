@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	public float GetConfidence(){
+		return Confidence;
+	}
+
 	private void StartDying(){
 		Dying = true;
 		Invoke("Die", TimeToLiveWithNoConfidence);

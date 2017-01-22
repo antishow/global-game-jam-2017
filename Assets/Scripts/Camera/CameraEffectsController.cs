@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 
 public class CameraEffectsController : MonoBehaviour {
+    private static PlayerController player;
+
     public static NoiseAndGrain NoiseEffect;
     public static ColorCorrectionCurves Saturation;
     public static VignetteAndChromaticAberration Vignette;
@@ -27,6 +29,7 @@ public class CameraEffectsController : MonoBehaviour {
 
     void Awake(){
         _instance = this;
+        player = GameObject.Find("Player").GetComponent<PlayerController>();
         NoiseEffect = GetComponent<NoiseAndGrain>();
         Saturation = GetComponent<ColorCorrectionCurves>();
         Vignette = GetComponent<VignetteAndChromaticAberration>();
@@ -72,12 +75,14 @@ public class CameraEffectsController : MonoBehaviour {
     private static void ApplyIrisEffect(){
         float timeElapsed = Mathf.Clamp(Time.time - IrisStartTime, 0.0001f, IrisTime);
         float intensity = timeElapsed / IrisTime;
+        float Confidence = player.GetConfidence();
+        float confidenceVignette = Mathf.Lerp(_instance.VignetteMin, _instance.VignetteMax, 1.0f - Confidence);
         if(irisMovingIn){
-            intensity = 1 - intensity;
+            intensity = Mathf.Max(confidenceVignette, 1 - intensity);
         }
 
         Vignette.intensity = intensity;
-        if(Vignette.intensity >= 1 || Vignette.intensity <= 0){
+        if(intensity >= 1 || intensity <= 0 || intensity == confidenceVignette){
             FinishIrisEffect();
         }
     }
