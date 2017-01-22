@@ -10,11 +10,15 @@ public class Options{
 }
 
 public class Global : MonoBehaviour {
+	private static Global _instance;
 	public static Options options;
 	public GameObject headbobToggleMenuOption;
 	public GameObject showTutorialMenuOption;
 	public static bool pause;
-	// Use this for initialization
+
+	void Awake(){
+		_instance = this;
+	}
 	void Start () {
 		JsonFileReader.checkLoading();
 		if(JsonFileReader.checkFileWithContent("/Options/Options.json", "{ \"headbobActive\":true,\"showTutorial\":true }")){
@@ -41,5 +45,15 @@ public class Global : MonoBehaviour {
 			Time.timeScale = 1;
 		}
 
+	}
+
+	public static void GameOver(){
+		print("GAME OVER");
+		CameraEffectsController.IrisOut();
+		_instance.Invoke("OnGameOverIrisOut", CameraEffectsController.IrisTime * 1.1f);
+	}
+
+	public void OnGameOverIrisOut(){
+		print("Game Over. Play again?");
 	}
 }
