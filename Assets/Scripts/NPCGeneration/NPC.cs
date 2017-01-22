@@ -95,7 +95,7 @@ public class NPC : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		headCube.transform.position = headBone.transform.position + new Vector3(0,0,0);
+		headCube.transform.position = headBone.transform.position + new Vector3(0,0.3f,0);
 		if(thingToLookAt == null && playerObject != null){
 			if(goingToWaveAtPlayer){
 				thingToLookAt = playerObject;
