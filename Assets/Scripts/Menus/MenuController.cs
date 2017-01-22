@@ -18,6 +18,12 @@ public class MenuController : MonoBehaviour {
 		if(Input.GetButtonDown(pauseButton)){
 			pauseMenu.active = !pauseMenu.active;
 			Global.pause = pauseMenu.active;
+
+			if(pauseMenu.active){
+				Conductor.PauseDamper();
+			} else {
+				Conductor.UnpauseDamper();
+			}
 		}
 	}	
 

@@ -15,11 +15,15 @@ public class Conductor : MonoBehaviour {
 	[RangeAttribute(0, 1)]
 	public float MasterVolume = 1.0f;
 
+	private static bool IsPaused = false;
+	private PlayerController player;
+
 	void Awake(){
 		_instance = this;
 		StartTime = Time.time;
 		FadingIn = true;
 		Play();
+		player = GameObject.Find("Player").GetComponent<PlayerController>();
 	}
 
 	private void Update(){
@@ -46,10 +50,29 @@ public class Conductor : MonoBehaviour {
 	}
 
 	protected void mixForConfidence(float confidence){
-		for(int i=0; i<Tracks.Length; i++){
+		int i, l = Tracks.Length;
+		for(i=0; i<l; i++){
 			AudioSource track = Tracks[i];
-			track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] * MasterVolume / Tracks.Length;
+			if(IsPaused){
+				if(i==0){
+					track.volume = Mathf.Min(0.15f, GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] * MasterVolume / Tracks.Length);
+				} else {
+					track.volume = 0;
+				}
+			} else {
+				track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] * MasterVolume / Tracks.Length;
+			}
 		}
+	}
+
+	public static void PauseDamper(){
+		IsPaused = true;
+		MixForConfidence(_instance.player.GetConfidence());
+	}
+
+	public static void UnpauseDamper(){
+		IsPaused = false;
+		MixForConfidence(_instance.player.GetConfidence());
 	}
 
 	private float GetVolumeLevelForTrack(int trackIndex, float confidence){
