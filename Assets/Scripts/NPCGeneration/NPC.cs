@@ -109,13 +109,10 @@ public class NPC : MonoBehaviour {
 		if(thingToLookAt != null){
 			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
 		}
-
-				Debug.Log(goingToWave);
-				Debug.Log(Vector3.Distance(playerObject.transform.position, this.transform.position));
+		
 		if(goingToWave){
 			if(goingToWaveAtPlayer && Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
-				Debug.Log("Waving SHould be true");
 				isWaving = true;
 
 				// change animator state
