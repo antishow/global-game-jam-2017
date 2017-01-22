@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour {
 	public float GetConfidence(){
 		return Confidence;
 	}
+	public void SetConfidence(float c){
+		Confidence = c;
+	}
 
 	private void StartDying(){
 		Dying = true;
