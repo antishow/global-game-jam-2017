@@ -108,7 +108,6 @@ public class NPC : MonoBehaviour {
 		if(this.transform.position.z < playerObject.transform.position.z - 10){
 			Destroy(this.transform.gameObject);
 		}
-		
 	}
 
 	public Color GenerateColor(){
