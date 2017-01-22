@@ -35,8 +35,20 @@ public class NPC : MonoBehaviour {
 	public GameObject[] shirtPrefabs;
 	public GameObject[] pantPrefabs;
 	public static GameObject playerObject;
+
+	public GameObject headCube;
+	public GameObject headBone;
+	public GameObject thingToLookAt;
+	public Animator waveAnim;
+	public Texture defaultTexture;
+	public Texture happyTexture;
+	public Texture[] upsetTextures;
+
+	public GameObject bodyGameObject;
+	public float gazeValue;
 	// Use this for initialization
 	void Start () {
+		waveAnim = this.GetComponent<Animator>();
 		if(playerObject == null){
 			playerObject = GameObject.FindWithTag("Player");
 		}
@@ -46,7 +58,7 @@ public class NPC : MonoBehaviour {
 		if(goingToWave && Random.Range(0.0f, 100.0f) >= chanceToWaveAtPlayer){
 			goingToWaveAtPlayer = true;
 		}
-
+		
 		npcItems.hairID = (NPCHair) Random.Range(0,hairPrefabs.Length);
 		npcItems.earsID = (NPCEars) Random.Range(0,earPrefabs.Length);
 		npcItems.noseID = (NPCNose) Random.Range(0,nosePrefabs.Length);
@@ -79,24 +91,37 @@ public class NPC : MonoBehaviour {
 			temp.transform.parent = this.transform;
 			temp.GetComponent<Renderer>().material.color = npcItems.pantsColor;
 		}
-
-
+		headCube.GetComponent<Renderer>().material.color = npcItems.skinColor;
+		bodyGameObject.GetComponent<Renderer>().material.color = npcItems.shirtColor;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		headCube.transform.position = headBone.transform.position + new Vector3(0,0.3f,0);
+		if(thingToLookAt == null && playerObject != null){
+			if(goingToWaveAtPlayer){
+				thingToLookAt = playerObject;
+			} else if(goingToWave){
+				thingToLookAt = playerObject.GetComponent<LookAtJunkList>().junkToLookAt[Random.Range(0,playerObject.GetComponent<LookAtJunkList>().junkToLookAt.Count-1)];
+			}
+		} 
+
+		if(thingToLookAt != null){
+			headCube.transform.LookAt(thingToLookAt.transform, Vector3.up);
+		}
+		
 		if(goingToWave){
-			if(Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
+			if(goingToWaveAtPlayer && Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
 				isWaving = true;
+
+				// change animator state
+				//playerObject.
+
 				//the NPC is walking at slow speed to try and flag the player down.
 				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSlowSpeed * Time.deltaTime));
 			} else {
-				if(goingToWaveAtPlayer){
-					//Make Eye Contact if going to wave at player
-				} else if(goingToWave && !goingToWaveAtPlayer){
-					//Eye Contact with other thing
-				}
+
 				//the NPC is walking at normal speed 
 				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
 			}
@@ -108,6 +133,13 @@ public class NPC : MonoBehaviour {
 		if(this.transform.position.z < playerObject.transform.position.z - 10){
 			Destroy(this.transform.gameObject);
 		}
+		if(isWaving){
+			//and player is waving
+			waveAnim.SetBool("Wave",true);
+		} else {
+			//Bad
+		}
+		gazeValue -= Time.deltaTime;
 	}
 
 	public Color GenerateColor(){
@@ -116,6 +148,10 @@ public class NPC : MonoBehaviour {
 
 	public Color GenerateColor(Color hint){
 		return new Color(hint.r + Random.Range(-0.06f, 0.06f), hint.g + Random.Range(-0.06f, 0.06f), hint.b + Random.Range(-0.06f, 0.06f));
+	}
+
+	public void GazeInfo(float gazeAmount){
+		gazeValue = gazeAmount;
 	}
 }
 

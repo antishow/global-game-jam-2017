@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 9bbe5b9813b7a5c469fcd47198f90cd9
-timeCreated: 1485027706
+guid: 4449e675fefa08c4db6204a4249d6c40
+timeCreated: 1485109429
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -21,7 +21,9 @@ ModelImporter:
     400012: Vert
     4300000: Vert
     7400000: Default Take
-    7400002: ArmatureAction
+    7400002: Wave_High
+    7400004: Wave_low
+    7400006: Wave_medium
     9500000: //RootNode
     13700000: Vert
   materials:
