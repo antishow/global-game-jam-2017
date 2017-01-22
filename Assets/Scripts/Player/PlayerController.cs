@@ -67,12 +67,6 @@ public class PlayerController : MonoBehaviour {
 	
 	void Start () {
 		Confidence = 1f;
-		InvokeRepeating("NudgeConfidence", 0, 0.0166f);
 		Dying = false;
-	}
-
-	void NudgeConfidence () {
-		float nudge = -0.0005f;
-		Confidence += nudge;
 	}
 }
