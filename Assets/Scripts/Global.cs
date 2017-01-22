@@ -10,9 +10,10 @@ public class Options{
 }
 
 public class Global : MonoBehaviour {
-	public Options options;
+	public static Options options;
 	public GameObject headbobToggleMenuOption;
 	public GameObject showTutorialMenuOption;
+	public static bool pause;
 	// Use this for initialization
 	void Start () {
 		JsonFileReader.checkLoading();
@@ -33,5 +34,12 @@ public class Global : MonoBehaviour {
 			options.showTutorial = showTutorialMenuOption.GetComponent<Toggle>().isOn;
 			JsonFileReader.WriteJsonToFile(Application.persistentDataPath + "/Options/Options.json", JsonUtility.ToJson(options));
 		}
+
+		if(Global.pause){
+			Time.timeScale = 0;
+		} else {
+			Time.timeScale = 1;
+		}
+
 	}
 }

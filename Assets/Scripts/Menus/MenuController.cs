@@ -14,7 +14,16 @@ public class MenuController : MonoBehaviour {
 	void Update () {
 		if(Input.GetButtonDown(buttonString)){
 			menuObject.active = !menuObject.active;
-			//Global.pause = menuObject.active;
+			Global.pause = menuObject.active;
 		}
+	}	
+
+	public void CloseMenu () {
+		menuObject.active = false;
+		Global.pause = false;
+	}
+
+	public void ExitGame () {
+		Application.Quit();
 	}
 }
