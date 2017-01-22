@@ -108,8 +108,8 @@ public class PlayerMove : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			if (Wave > 0)
-			{			 
-			 	WaveArm(WaveWait - Wave);
+			{	
+			 	WaveArm(0.1f);
 			}	
 		}
 
@@ -135,7 +135,7 @@ public class PlayerMove : MonoBehaviour {
 		}
 		else
 		{
-			WaveMagnitude -=Time.deltaTime;
+			WaveMagnitude -= Time.deltaTime;
 		}
 		if (Down>0)
 		{
@@ -222,7 +222,7 @@ public class PlayerMove : MonoBehaviour {
 		}
 		audioSource.clip = SFX.Wave;
 		audioSource.Play();
-		WaveMagnitude += w*ArmMagnitude*.4f;//******** Add factor based on current rotation
+		WaveMagnitude += w * ArmMagnitude * 1f;//******** Add factor based on current rotation
 		WaveMagnitude = Mathf.Clamp01(WaveMagnitude);
 	}
 	

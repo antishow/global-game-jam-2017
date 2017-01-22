@@ -131,21 +131,26 @@ public class NPC : MonoBehaviour {
 			this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
 		}
 
-		if(this.transform.position.z < playerObject.transform.position.z - 10){
+		if(this.transform.position.z < playerObject.transform.position.z - 1){
 			Destroy(this.transform.gameObject);
 		}
 		if(isWaving){
 			//and player is waving
 			waveAnim.SetBool("Wave",true);
 			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
-			float commitVal = commitmentObject.GetCommitment(true);
-			Global.Score += (int)commitVal;
+			float mag = commitmentObject.PlayerMoveScript.WaveMagnitude;
+			float commitVal = (mag * commitmentObject.GetCommitment(true)) / 50f;
+			float commitValScore = (mag * commitmentObject.GetCommitment(true));
+
+			Global.Score += (int)commitValScore;
 			playerObject.GetComponent<PlayerController>().NudgeConfidence(true, commitVal / 10f);
 		} else {
 			//and player is waving Lose confidence
 			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
-			float commitVal = commitmentObject.GetCommitment(true);
-			playerObject.GetComponent<PlayerController>().NudgeConfidence(false, commitVal / 10f);
+			float commitVal = commitmentObject.GetCommitment(true) / 100f;
+			if(commitVal >= 0.4){
+				playerObject.GetComponent<PlayerController>().NudgeConfidence(false, commitVal / 10f);
+			}
 		}
 		gazeValue -= Time.deltaTime;
 	}
