@@ -15,9 +15,11 @@ public class Global : MonoBehaviour {
 	public GameObject headbobToggleMenuOption;
 	public GameObject showTutorialMenuOption;
 	public static bool pause;
+	private MenuController menuController;
 
 	void Awake(){
 		_instance = this;
+		menuController = GetComponent<MenuController>();
 	}
 	void Start () {
 		JsonFileReader.checkLoading();
@@ -54,6 +56,6 @@ public class Global : MonoBehaviour {
 	}
 
 	public void OnGameOverIrisOut(){
-		print("Game Over. Play again?");
+		menuController.DisplayGameOverScreen();
 	}
 }
