@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	public float GetConfidence(){
+		return Confidence;
+	}
+
 	private void StartDying(){
 		Dying = true;
 		Invoke("Die", TimeToLiveWithNoConfidence);
@@ -38,7 +42,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void Die(){
-		GameController.GameOver();
+		Global.GameOver();
 	}
 
 	private int _expression;
@@ -51,7 +55,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Start () {
-		Confidence = 0.1f;
+		Confidence = 1f;
 		InvokeRepeating("NudgeConfidence", 0, 0.0166f);
 		Dying = false;
 	}
