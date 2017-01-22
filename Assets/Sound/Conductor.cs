@@ -7,10 +7,29 @@ public class Conductor : MonoBehaviour {
 	public AudioSource[] Tracks;
 	public float[] TrackMixinPoints;
 	public float[] TrackVolumes;
+	public float TrackTime = 43.875f;
+
+	private float StartTime;
+	private bool FadingIn;
+
+	[RangeAttribute(0, 1)]
+	public float MasterVolume = 1.0f;
 
 	void Awake(){
 		_instance = this;
+		StartTime = Time.time;
+		FadingIn = true;
 		Play();
+	}
+
+	private void Update(){
+		if(FadingIn){
+			MasterVolume = Mathf.Clamp((Time.time - StartTime) / CameraEffectsController.IrisTime, 0, 1);
+		}
+
+		if(FadingIn && MasterVolume == 1){
+			FadingIn = false;
+		}
 	}
 
 	private void Play(){
@@ -19,7 +38,7 @@ public class Conductor : MonoBehaviour {
 			track.time = 0;
 		}
 
-		Invoke("Play", 43.79f);
+		Invoke("Play", TrackTime);
 	}
 
 	public static void MixForConfidence(float confidence){
@@ -29,15 +48,11 @@ public class Conductor : MonoBehaviour {
 	protected void mixForConfidence(float confidence){
 		for(int i=0; i<Tracks.Length; i++){
 			AudioSource track = Tracks[i];
-			track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] / Tracks.Length;
+			track.volume = GetVolumeLevelForTrack(i, confidence) * TrackVolumes[i] * MasterVolume / Tracks.Length;
 		}
 	}
 
 	private float GetVolumeLevelForTrack(int trackIndex, float confidence){
-		if(trackIndex == 0){
-			return 1.0f;
-		}
-
 		float mixin = TrackMixinPoints[trackIndex];
 		float range = 1.0f - mixin;
 		float ret = (confidence - mixin) / range;

@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour {
 	public const int NEUTRAL = 1;
 	public const int HAPPY = 2;
 
+	public float TimeToLiveWithNoConfidence = 5.0f;
+	public bool Dying = false;
+
 	private float _confidence = 1.0f;
 	protected float Confidence{
 		get { return _confidence; }
@@ -15,7 +18,27 @@ public class PlayerController : MonoBehaviour {
 			Expression = Mathf.FloorToInt(_confidence * 2.9f);
 			HUDController.UpdatePlayerConfidence(_confidence);
 			CameraEffectsController.ApplyConfidenceToEffects(_confidence);
+
+			if(Confidence <= 0){
+				StartDying();
+			} else if(Dying){
+				CancelDying();
+			}
 		}
+	}
+
+	private void StartDying(){
+		Dying = true;
+		Invoke("Die", TimeToLiveWithNoConfidence);
+		CancelInvoke("NudgeConfidence");
+	}
+
+	private void CancelDying(){
+		CancelInvoke("Die");
+	}
+
+	private void Die(){
+		GameController.GameOver();
 	}
 
 	private int _expression;
@@ -28,21 +51,13 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Start () {
-		Confidence = 1.0f;
+		Confidence = 0.1f;
 		InvokeRepeating("NudgeConfidence", 0, 0.0166f);
+		Dying = false;
 	}
 
-	private bool nudgeUpwards = true;
-
 	void NudgeConfidence () {
-		float nudge = 0.0005f;
-		if(!nudgeUpwards){
-			nudge *= -1;
-		}
-
+		float nudge = -0.0005f;
 		Confidence += nudge;
-		if(Confidence == 1 || Confidence == 0){
-			nudgeUpwards = !nudgeUpwards;
-		}
 	}
 }
