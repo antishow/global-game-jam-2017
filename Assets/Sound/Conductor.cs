@@ -9,12 +9,27 @@ public class Conductor : MonoBehaviour {
 	public float[] TrackVolumes;
 	public float TrackTime = 43.875f;
 
+	private float StartTime;
+	private bool FadingIn;
+
 	[RangeAttribute(0, 1)]
 	public float MasterVolume = 1.0f;
 
 	void Awake(){
 		_instance = this;
+		StartTime = Time.time;
+		FadingIn = true;
 		Play();
+	}
+
+	private void Update(){
+		if(FadingIn){
+			MasterVolume = Mathf.Clamp((Time.time - StartTime) / CameraEffectsController.IrisTime, 0, 1);
+		}
+
+		if(FadingIn && MasterVolume == 1){
+			FadingIn = false;
+		}
 	}
 
 	private void Play(){
