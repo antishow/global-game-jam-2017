@@ -22,8 +22,7 @@ public class PlayerMove : MonoBehaviour {
 	public Animator HandWaveAnim; 
 	public Vector3 PlayerPosition;
 	public float MoveSpeed;
-	public Vector2 WalkMotionSpeed;
-	//public float WalkMotionMagnitude;
+	public Vector2 WalkMotionSpeed; 
 	public Vector2 WalkMotionfactor; 
 	Vector3 WalkMotionOffset = new Vector3(0, 0, 0);
  
