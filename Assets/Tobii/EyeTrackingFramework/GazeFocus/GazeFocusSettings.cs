@@ -118,13 +118,13 @@ namespace Tobii.EyeTracking
         private static int CreateDefaultLayerMask()
         {
             int layerMask = 0;
-            for (int i = 0; i < MaximumLayersInUnity; ++i)
-            {
-                if (!string.Empty.Equals(UnityEngine.LayerMask.LayerToName(i)))
-                {
-                    layerMask |= (1 << i);
-                }
-            }
+            // for (int i = 0; i < MaximumLayersInUnity; ++i)
+            // {
+            //     if (!string.Empty.Equals(UnityEngine.LayerMask.LayerToName(i)))
+            //     {
+            //         layerMask |= (1 << i);
+            //     }
+            // }
 
             return layerMask;
         }
