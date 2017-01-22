@@ -112,34 +112,21 @@ public class NPC : MonoBehaviour {
 		}
 
 		if(goingToWave){
-			if(goingToWaveAtPlayer && Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
+			if(Vector3.Distance(playerObject.transform.position, this.transform.position) <= waveDistanceThreshold){
 				//Player is within "Waving distance"
 				isWaving = true;
-
-				// change animator state
-				//playerObject.
-
-				//the NPC is walking at slow speed to try and flag the player down.
-				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSlowSpeed * Time.deltaTime));
+				waveAnim.SetBool("Wave",true);
 			} else {
-
-				//the NPC is walking at normal speed 
-				this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
+				isWaving = false;
+				waveAnim.SetBool("Wave",false);
 			}
-		} else {
-			//the NPC is not going to wave so doesn't slow down walking at normal speed 
-			this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
 		}
 
-		if(this.transform.position.z < playerObject.transform.position.z - 1){
-			Destroy(this.transform.gameObject);
-		}
 		if(isWaving){
 			//and player is waving
-			waveAnim.SetBool("Wave",true);
 			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
 			float mag = commitmentObject.PlayerMoveScript.WaveMagnitude;
-			float commitVal = (mag * commitmentObject.GetCommitment(true)) / 50f;
+			float commitVal = (mag * commitmentObject.GetCommitment(true)) / 30f;
 			float commitValScore = (mag * commitmentObject.GetCommitment(true));
 
 			Global.Score += (int)commitValScore;
@@ -147,12 +134,17 @@ public class NPC : MonoBehaviour {
 		} else {
 			//and player is waving Lose confidence
 			commitmentObject = GameObject.Find("CommitmentMeter").GetComponent<CommitmentMeterScript>();
-			float commitVal = commitmentObject.GetCommitment(true) / 100f;
-			if(commitVal >= 0.4){
-				playerObject.GetComponent<PlayerController>().NudgeConfidence(false, commitVal / 10f);
-			}
+			float mag = 0.1f + commitmentObject.PlayerMoveScript.WaveMagnitude;
+			float commitVal = (mag * commitmentObject.GetCommitment(true)) / 30f;
+			playerObject.GetComponent<PlayerController>().NudgeConfidence(false, commitVal / 10f);
 		}
+
 		gazeValue -= Time.deltaTime;
+
+		this.transform.position = (this.transform.position + new Vector3(0,0, -npcSpeed * Time.deltaTime));
+		if(this.transform.position.z < playerObject.transform.position.z - 1){
+			Destroy(this.transform.gameObject);
+		}
 	}
 
 	public Color GenerateColor(){

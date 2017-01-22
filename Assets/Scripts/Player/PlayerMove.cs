@@ -109,7 +109,7 @@ public class PlayerMove : MonoBehaviour {
 		{
 			if (Wave > 0)
 			{	
-			 	WaveArm(0.1f);
+			 	WaveArm(0.2f);
 			}	
 		}
 
@@ -136,6 +136,7 @@ public class PlayerMove : MonoBehaviour {
 		else
 		{
 			WaveMagnitude -= Time.deltaTime;
+			WaveMagnitude = Mathf.Clamp01(WaveMagnitude);
 		}
 		if (Down>0)
 		{
