@@ -4,7 +4,20 @@ using System.Collections.Generic;
 using Tobii.EyeTracking;
 using UnityEngine;
 
+
+[System.Serializable]
+public class PlayerSoundEffects{
+	public AudioClip[] WaveSuccess;
+	public AudioClip[] WaveFail;
+	public AudioClip SlideUp;
+	public AudioClip SlideDown;
+	public AudioClip Wave;
+}
+
 public class PlayerMove : MonoBehaviour {
+	public PlayerSoundEffects SFX;
+	private AudioSource audioSource;
+	private float SlideWhistleDuration = 2.0f;
 
 	public Animator HandWaveAnim; 
 	public Vector3 PlayerPosition;
@@ -33,16 +46,13 @@ public class PlayerMove : MonoBehaviour {
 
 	public Vector2 EyeGaze;
 	public float GazeMagnitude;
-	
-  
 
+	private bool IsArmMoving = false;
+	private bool IsArmMovingUp = false;
 
-
-	// Use this for initialization
-	void Start ()
-	{
-		 
-    }
+	void Awake(){
+		audioSource = GetComponent<AudioSource>();
+	}
 	
 	// Update is called once per frame
 	void Update ()
@@ -86,11 +96,12 @@ public class PlayerMove : MonoBehaviour {
 
 	private void GetInput ()
 	{
+		float dY = 0;
+
 		if (Input.GetKeyUp(KeyCode.Space))
 		{
 			Wave = WaveWait;
 			Down = DownWait;
-			Debug.Log("keyup");
 		}
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
@@ -104,7 +115,7 @@ public class PlayerMove : MonoBehaviour {
 		{
 			if (Wave<=0)
 			{
-				ArmMagnitude += Time.deltaTime * ArmRaiseSpeed;
+				dY = Time.deltaTime * ArmRaiseSpeed;
 				Down = DownWait;
 			}				
 
@@ -113,7 +124,7 @@ public class PlayerMove : MonoBehaviour {
 		{
 			if (Down<=0)
 			{ 
-				ArmMagnitude -= Mathf.Clamp(Time.deltaTime * ArmRaiseSpeed, 0, ArmMaxHeight);
+				dY = -1 * Mathf.Clamp(Time.deltaTime * ArmRaiseSpeed, 0, ArmMaxHeight);
 			}			
 		}
 		if (Wave > 0)
@@ -128,12 +139,75 @@ public class PlayerMove : MonoBehaviour {
 		{
 			Down -= Time.deltaTime;
 		}
-		ArmMagnitude = Mathf.Clamp01(ArmMagnitude);
+
+		float newMagnitude = Mathf.Clamp01(ArmMagnitude + dY);
+		dY = newMagnitude - ArmMagnitude;
+
+		if(Mathf.Abs(dY) > 0){
+			if(!IsArmMoving){
+				if(dY > 0){
+					StartMovingArmUp();
+				} else {
+					StartMovingArmDown();
+				}
+			} else if(IsArmMoving){ 
+				if(!IsArmMovingUp && dY > 0){
+					StartMovingArmUp();
+				} else if(IsArmMovingUp && dY < 0){
+					StartMovingArmDown();
+				}
+			}
+
+			IsArmMoving = true;
+		} else {
+			if(IsArmMoving){
+				StopMovingArm();
+			}
+			IsArmMoving = false;
+		}
+
+		ArmMagnitude = newMagnitude;
 		ArmHeight = ((ArmMaxHeight - ArmMinHeight) * ArmMagnitude) + ArmMinHeight;
+	}
+
+	private void StartMovingArmUp(){
+		IsArmMovingUp = true;
+		IsArmMoving = true;
+		if(audioSource.isPlaying){
+			audioSource.Stop();
+		}
+		float iLerp = Mathf.InverseLerp(ArmMinHeight, ArmMaxHeight, ArmHeight);
+		audioSource.clip = SFX.SlideUp;
+		audioSource.time = iLerp * SlideWhistleDuration;
+		audioSource.Play();
+	}
+
+	private void StartMovingArmDown(){
+		IsArmMovingUp = false;
+		IsArmMoving = true;
+		if(audioSource.isPlaying){
+			audioSource.Stop();
+		}
+		float iLerp = Mathf.InverseLerp(ArmMinHeight, ArmMaxHeight, ArmHeight);
+		audioSource.clip = SFX.SlideDown;
+		audioSource.time = iLerp * SlideWhistleDuration;
+		audioSource.Play();
+	}
+
+	private void StopMovingArm(){
+		IsArmMoving = false;
+		if(audioSource.isPlaying){
+			audioSource.Stop();
+		}
 	}
 
 	private void WaveArm (float w)
 	{
+		if(audioSource.isPlaying){
+			audioSource.Stop();
+		}
+		audioSource.clip = SFX.Wave;
+		audioSource.Play();
 		WaveMagnitude += w*ArmMagnitude*.4f;//******** Add factor based on current rotation
 		WaveMagnitude = Mathf.Clamp01(WaveMagnitude);
 	}
